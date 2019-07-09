@@ -1,4 +1,4 @@
-# recipe-table
+# Cookbook
 
 To run both the server and react app open work directory and run
 
