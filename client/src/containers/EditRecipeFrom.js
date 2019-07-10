@@ -47,7 +47,6 @@ class EditRecipeForm extends React.Component {
       <div className="form-wrapper">
         <h3 className="form-title">Edit recipe</h3>
         <form onSubmit={this.handleEditRecipe}>
-          <input type="hidden" value={this.props.recipeId} />
           <label className="form-label" htmlFor="edit-recipe">Recipe:</label>
           <input
             type="text"
