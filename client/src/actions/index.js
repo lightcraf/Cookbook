@@ -61,6 +61,10 @@ export const addRecipe = (url, recipeName, recipeDescription) => {
       })
     }).then((res) => res.json())
       .then((result) => {
+        if (result.fieldError) {
+          alert(result.fieldError);
+          return;
+        }
         dispatch(recipesFetchDataSuccess(result.recipes))
       })
       .catch(() => dispatch(recipesHasErrored(true)))
@@ -81,6 +85,10 @@ export const editRecipe = (url, recipeId, recipeName, recipeDescription) => {
       })
     }).then((res) => res.json())
       .then((result) => {
+        if (result.fieldError) {
+          alert(result.fieldError);
+          return;
+        }
         dispatch(recipesFetchDataSuccess(result.recipes))
       })
       .catch(() => dispatch(recipesHasErrored(true)))
@@ -104,6 +112,10 @@ export const fetchRecipeHistory = (url, recipeId) => {
       body: JSON.stringify({ recipeId: recipeId })
     }).then((res) => res.json())
       .then((result) => {
+        if (result.fieldError) {
+          alert(result.fieldError);
+          return;
+        }
         dispatch(recipeHistoryFetchSuccess(result.recipes))
       })
       .catch(() => dispatch(recipesHasErrored(true)))
