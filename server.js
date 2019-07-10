@@ -22,6 +22,12 @@ app.get('/api/recipes', function (req, res) {
 app.post('/api/recipes', (req, res) => {
   const recipe = req.body.recipeName;
   const description = req.body.recipeDescription;
+  
+  if (recipe.length === 0) {
+    return res.send({ fieldError: "Recipe cannot be blank" });
+  } else if (description.length === 0) {
+    return res.send({ fieldError: "Description cannot be blank" });
+  }
 
   function insertRecipe() {
     return new Promise((resolve, reject) => {
@@ -77,6 +83,14 @@ app.put('/api/edit', (req, res) => {
   const recipeId = req.body.recipeId;
   const recipe = req.body.recipeName;
   const description = req.body.recipeDescription;
+  
+  if (recipe.length === 0) {
+    return res.send({ fieldError: "Recipe cannot be blank" });
+  } else if (description.length === 0) {
+    return res.send({ fieldError: "Description cannot be blank" });
+  } else if (!Number.isInteger(Number(recipeId)) || Math.floor(Number(recipeId)) <= 0) {
+    return res.send({ fieldError: "Something went wrong" });
+  }
 
   function updateRecipe() {
     return new Promise((resolve, reject) => {
@@ -128,6 +142,10 @@ app.put('/api/edit', (req, res) => {
 
 app.post('/api/history', function (req, res) {
   const recipeId = req.body.recipeId;
+  
+  if (!Number.isInteger(Number(recipeId)) || Math.floor(Number(recipeId)) <= 0) {
+    return res.send({ fieldError: "Something went wrong" });
+  }
 
   db.all(`SELECT edited, recipe, description FROM recipe_history WHERE id = ? ORDER BY edited DESC`, [recipeId], (err, rows) => {
     if (err) {
@@ -136,6 +154,17 @@ app.post('/api/history', function (req, res) {
     const pageData = rows;
     res.send({ recipes: pageData });
   });
+});
+
+app.use(function (req, res, next) {
+  res.type('text/html');
+  res.status(404).send("<h1>404 - Not Found</h1>");
+});
+
+app.use(function (err, req, res, next) {
+  console.error(err.stack);
+  res.type('text/html');
+  res.status(500).send("<h1>500 - Server Error</h1>");
 });
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
