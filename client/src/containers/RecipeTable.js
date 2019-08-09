@@ -3,24 +3,18 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import HistoryTable from '../components/HistoryTable';
 import {
-  recipesFetchData,
   setRecipeNameEdit,
   setRecipeDescriptionEdit,
   setRecipeId,
-  fetchRecipeHistory,
   setHistoryVisibility,
-  setFocus
+  setFocus,
+  getRecipes,
+  getRecipeHistory
 } from '../actions';
 
 class RecipeTable extends React.Component {
-  constructor(props) {
-    super(props);
-    this.handleGetRowData = this.handleGetRowData.bind(this);
-    this.handleRecipeHistory = this.handleRecipeHistory.bind(this);
-  }
-
   componentDidMount() {
-    this.props.fetchData('/api/recipes');
+    this.props.getRecipes();
   }
 
   handleGetRowData(item) {
@@ -34,7 +28,7 @@ class RecipeTable extends React.Component {
     const recipeId = item.id;
 
     this.props.setRecipeId(recipeId);
-    this.props.fetchRecipeHistory('/api/history', recipeId);
+    this.props.getRecipeHistory(recipeId);
 
     if (this.props.isHistoryVisible === false) {
       this.props.setHistoryVisibility(true);
@@ -46,7 +40,6 @@ class RecipeTable extends React.Component {
   render() {
     const historyRecipeId = this.props.recipeId;
     const isHistoryVisible = this.props.isHistoryVisible;
-
     let historyTable = null;
 
     if (this.props.recipeHistory.length !== 0) {
@@ -56,7 +49,7 @@ class RecipeTable extends React.Component {
     }
 
     if (this.props.recipesHasErrored) {
-      return <p>Sorry! There was an error loading the recipes</p>;
+      return <p>Sorry! There was an error loading the recipes.</p>;
     }
 
     if (this.props.recipesIsLoading) {
@@ -81,8 +74,8 @@ class RecipeTable extends React.Component {
                 <td className="recipe-table-cell">{item.recipe}</td>
                 <td className="recipe-table-cell">{item.description}</td>
                 <td className="recipe-table-cell">
-                  <button className="table-btn btn-edit" onClick={this.handleGetRowData.bind(this, item)}>Edit</button>
-                  <button className="table-btn btn-history" onClick={this.handleRecipeHistory.bind(this, item)}>
+                  <button className="table-btn btn-edit" onClick={() => this.handleGetRowData(item)}>Edit</button>
+                  <button className="table-btn btn-history" onClick={() => this.handleRecipeHistory(item)}>
                     {(isHistoryVisible && (historyRecipeId === item.id)) ? "Hide history" : "View history"}
                   </button>
                 </td>
@@ -110,16 +103,14 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    fetchData: url => dispatch(recipesFetchData(url)),
-    setRecipeId: recipeId => dispatch(setRecipeId(recipeId)),
-    setRecipeNameEdit: recipeName => dispatch(setRecipeNameEdit(recipeName)),
-    setRecipeDescriptionEdit: recipeDescription => dispatch(setRecipeDescriptionEdit(recipeDescription)),
-    fetchRecipeHistory: (url, recipeId) => dispatch(fetchRecipeHistory(url, recipeId)),
-    setHistoryVisibility: bool => dispatch(setHistoryVisibility(bool)),
-    setFocus: bool => dispatch(setFocus(bool))
-  };
+const mapDispatchToProps = {
+    setRecipeId,
+    setRecipeNameEdit,
+    setRecipeDescriptionEdit,
+    setHistoryVisibility,
+    setFocus,
+    getRecipes,
+    getRecipeHistory
 };
 
 RecipeTable.propTypes = {
@@ -134,11 +125,11 @@ RecipeTable.propTypes = {
   recipeDescriptionEdit: PropTypes.string,
   recipeHistory: PropTypes.array,
   isHistoryVisible: PropTypes.bool,
-  fetchData: PropTypes.func,
+  getRecipes: PropTypes.func,
   setRecipeId: PropTypes.func,
   setRecipeNameEdit: PropTypes.func,
   setRecipeDescriptionEdit: PropTypes.func,
-  fetchRecipeHistory: PropTypes.func,
+  getRecipeHistory: PropTypes.func,
   setHistoryVisibility: PropTypes.func,
   setFocus: PropTypes.func
 };
