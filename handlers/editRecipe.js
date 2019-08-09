@@ -2,7 +2,8 @@ const sqlite3 = require('sqlite3').verbose();
 const DB_PATH = 'public/db/recipes.db';
 const db = new sqlite3.Database(DB_PATH);
 
-exports.addRecipe = function (req, res) {
+exports.editRecipe = function (req, res) {
+  const recipeId = req.body.recipeId;
   const recipe = req.body.recipeName;
   const description = req.body.recipeDescription;
 
@@ -10,22 +11,13 @@ exports.addRecipe = function (req, res) {
     return res.send({ fieldError: 'Recipe cannot be blank' });
   } else if (description.length === 0) {
     return res.send({ fieldError: 'Description cannot be blank' });
+  } else if (!Number.isInteger(Number(recipeId)) || Math.floor(Number(recipeId)) <= 0) {
+    return res.send({ fieldError: 'Something went wrong' });
   }
 
-  function insertRecipe() {
+  function updateRecipe() {
     return new Promise((resolve, reject) => {
-      db.run("INSERT INTO recipes (created, recipe, description) VALUES (DATETIME('now', 'localtime'), ?, ?)", [recipe, description], function (err) {
-        if (err) {
-          reject(err);
-        }
-        resolve();
-      });
-    });
-  }
-
-  function insertRecipeIntoHistory() {
-    return new Promise((resolve, reject) => {
-      db.run("INSERT INTO recipe_history (id, edited, recipe, description) SELECT * FROM recipes WHERE id = (SELECT MAX(id) FROM recipes)", [], function (err) {
+      db.run("UPDATE recipes SET recipe = ?, description = ? WHERE id = ?", [recipe, description, recipeId], function (err) {
         if (err) {
           reject(err);
         }
@@ -43,12 +35,24 @@ exports.addRecipe = function (req, res) {
         const pageData = rows;
         res.send({ recipes: pageData });
       });
+
     });
   }
 
-  async function addRecipe() {
+  function insertRecipeIntoHistory() {
+    return new Promise((resolve, reject) => {
+      db.run("INSERT INTO recipe_history (id, edited, recipe, description) VALUES (?, DATETIME('now', 'localtime'), ?, ?)", [recipeId, recipe, description], function (err) {
+        if (err) {
+          reject(err);
+        }
+        resolve();
+      });
+    });
+  }
+
+  async function editRecipe() {
     try {
-      await insertRecipe();
+      await updateRecipe();
       await insertRecipeIntoHistory();
       await getRecipes();
     } catch (error) {
@@ -56,5 +60,5 @@ exports.addRecipe = function (req, res) {
     }
   }
 
-  addRecipe();
+  editRecipe();
 };
