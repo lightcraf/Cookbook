@@ -8,22 +8,19 @@ class AddRecipeForm extends React.Component {
     super(props);
     this.recipeNameAdd = React.createRef();
     this.recipeDescriptionAdd = React.createRef();
-
-    this.handleFormChange = this.handleFormChange.bind(this);
-    this.handleAddRecipe = this.handleAddRecipe.bind(this);
   }
 
-  handleFormChange(event) {
-    const inputValue = event.target.value;
-    if (event.target.name === "recipe-name-edit") {
+  handleFormChange(e) {
+    const inputValue = e.target.value;
+    if (e.target.name === "recipe-name-edit") {
       this.props.setRecipeNameEdit(inputValue);
-    } else if (event.target.name === "recipe-description-edit") {
+    } else if (e.target.name === "recipe-description-edit") {
       this.props.setRecipeDescriptionEdit(inputValue);
     }
   }
 
-  handleAddRecipe(event) {
-    event.preventDefault();
+  handleAddRecipe(e) {
+    e.preventDefault();
     let recipeName = this.recipeNameAdd.current;
     let recipeDescription = this.recipeDescriptionAdd.current;
 
@@ -31,7 +28,7 @@ class AddRecipeForm extends React.Component {
       return;
     }
 
-    this.props.addRecipe('/api/recipes', recipeName.value, recipeDescription.value);
+    this.props.addRecipe(recipeName.value, recipeDescription.value);
 
     recipeName.value = "";
     recipeDescription.value = "";
@@ -41,7 +38,7 @@ class AddRecipeForm extends React.Component {
     return (
       <div className="form-wrapper">
         <h3 className="form-title">Add recipe</h3>
-        <form onSubmit={this.handleAddRecipe}>
+        <form onSubmit={(e) => this.handleAddRecipe(e)}>
           <label className="form-label" htmlFor="add-recipe">Recipe:</label>
           <input
             type="text"
@@ -49,14 +46,14 @@ class AddRecipeForm extends React.Component {
             className="form-control"
             name="recipe-name-add"
             ref={this.recipeNameAdd}
-            onChange={this.handleFormChange} />
+            onChange={(e) => this.handleFormChange(e)} />
           <label className="form-label" htmlFor="add-recipe-description">Description:</label>
           <textarea
             id="add-recipe-description"
             className="form-control"
             name="recipe-description-add"
             ref={this.recipeDescriptionAdd}
-            onChange={this.handleFormChange}>
+            onChange={(e) => this.handleFormChange(e)}>
           </textarea>
           <button type="submit" className="form-btn-submit">Add</button>
         </form>
@@ -65,10 +62,8 @@ class AddRecipeForm extends React.Component {
   }
 }
 
-const mapDispatchToProps = dispatch => {
-  return {
-    addRecipe: (url, recipeName, recipeDescription) => dispatch(addRecipe(url, recipeName, recipeDescription))
-  };
+const mapDispatchToProps = {
+    addRecipe
 };
 
 AddRecipeForm.propTypes = {
