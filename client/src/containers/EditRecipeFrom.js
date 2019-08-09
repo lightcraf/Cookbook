@@ -1,29 +1,26 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import {  setRecipeNameEdit, setRecipeDescriptionEdit, setRecipeId, editRecipe, setFocus } from '../actions';
+import { setRecipeNameEdit, setRecipeDescriptionEdit, setRecipeId, editRecipe, setFocus } from '../actions';
 
 class EditRecipeForm extends React.Component {
   constructor(props) {
     super(props);
     this.recipeNameEdit = React.createRef();
-
-    this.handleFormChange = this.handleFormChange.bind(this);
-    this.handleEditRecipe = this.handleEditRecipe.bind(this);
   }
 
-  handleFormChange(event) {
-    const inputValue = event.target.value;
-    if (event.target.name === "recipe-name-edit") {
+  handleFormChange(e) {
+    const inputValue = e.target.value;
+    if (e.target.name === "recipe-name-edit") {
       this.props.setRecipeNameEdit(inputValue);
-    } else if (event.target.name === "recipe-description-edit") {
+    } else if (e.target.name === "recipe-description-edit") {
       this.props.setRecipeDescriptionEdit(inputValue);
       this.props.setFocus(false);
     }
   }
 
-  handleEditRecipe(event) {
-    event.preventDefault();
+  handleEditRecipe(e) {
+    e.preventDefault();
     const recipeId = this.props.recipeId;
     const recipeName = this.props.recipeNameEdit;
     const recipeDescription = this.props.recipeDescriptionEdit;
@@ -32,7 +29,7 @@ class EditRecipeForm extends React.Component {
       return;
     }
 
-    this.props.editRecipe('/api/edit', recipeId, recipeName, recipeDescription);
+    this.props.editRecipe(recipeId, recipeName, recipeDescription);
     this.props.setRecipeId("");
     this.props.setRecipeNameEdit("");
     this.props.setRecipeDescriptionEdit("");
@@ -46,7 +43,7 @@ class EditRecipeForm extends React.Component {
     return (
       <div className="form-wrapper">
         <h3 className="form-title">Edit recipe</h3>
-        <form onSubmit={this.handleEditRecipe}>
+        <form onSubmit={(e) => this.handleEditRecipe(e)}>
           <label className="form-label" htmlFor="edit-recipe">Recipe:</label>
           <input
             type="text"
@@ -55,14 +52,14 @@ class EditRecipeForm extends React.Component {
             name="recipe-name-edit"
             ref={this.recipeNameEdit}
             value={this.props.recipeNameEdit}
-            onChange={this.handleFormChange} />
+            onChange={(e) => this.handleFormChange(e)} />
           <label className="form-label" htmlFor="edit-recipe-description">Description:</label>
           <textarea
             id="edit-recipe-description"
             className="form-control"
             name="recipe-description-edit"
             value={this.props.recipeDescriptionEdit}
-            onChange={this.handleFormChange}>
+            onChange={(e) => this.handleFormChange(e)}>
           </textarea>
           <button type="submit" className="form-btn-submit">Save</button>
         </form>
@@ -80,14 +77,12 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    setRecipeNameEdit: recipeName => dispatch(setRecipeNameEdit(recipeName)),
-    setRecipeDescriptionEdit: recipeDescription => dispatch(setRecipeDescriptionEdit(recipeDescription)),
-    setRecipeId: recipeId => dispatch(setRecipeId(recipeId)),
-    editRecipe: (url, recipeId, recipeName, recipeDescription) => dispatch(editRecipe(url, recipeId, recipeName, recipeDescription)),
-    setFocus: bool => dispatch(setFocus(bool))
-  };
+const mapDispatchToProps = {
+    setRecipeNameEdit,
+    setRecipeDescriptionEdit,
+    setRecipeId,
+    editRecipe,
+    setFocus
 };
 
 EditRecipeForm.propTypes = {
