@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import EditReciprForm from '../containers/EditRecipeFrom';
-import AddReciprForm from '../containers/AddRecipeFrom';
+import EditRecipeForm from '../containers/EditRecipeForm';
+import AddRecipeForm from '../containers/AddRecipeForm';
 import RecipeTable from '../containers/RecipeTable';
 import './App.css';
 
@@ -10,15 +10,15 @@ class App extends Component {
       <React.Fragment>
         <div className="row">
           <div className="col-6">
-            <AddReciprForm />
+            <AddRecipeForm />
           </div>
           <div className="col-6">
-            <EditReciprForm />
+            <EditRecipeForm />
           </div>
         </div>
         <div className="row">
           <div className="col-12">
-          <RecipeTable />
+            <RecipeTable />
           </div>
         </div>
       </React.Fragment>
