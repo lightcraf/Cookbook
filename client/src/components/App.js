@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import EditRecipeForm from '../containers/EditRecipeForm';
-import AddRecipeForm from '../containers/AddRecipeForm';
-import RecipeTable from '../containers/RecipeTable';
+import EditRecipeFormContainer from '../containers/EditRecipeFormContainer';
+import AddRecipeFormContainer from '../containers/AddRecipeFormContainer';
+import RecipesContainer from '../containers/RecipesContainer';
 import './App.css';
 
 class App extends Component {
@@ -10,15 +10,15 @@ class App extends Component {
       <React.Fragment>
         <div className="row">
           <div className="col-6">
-            <AddRecipeForm />
+            <AddRecipeFormContainer />
           </div>
           <div className="col-6">
-            <EditRecipeForm />
+            <EditRecipeFormContainer />
           </div>
         </div>
         <div className="row">
           <div className="col-12">
-            <RecipeTable />
+          <RecipesContainer />
           </div>
         </div>
       </React.Fragment>
